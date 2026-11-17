@@ -1,0 +1,859 @@
+<!-- ... existing code ... -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Cometic Engine 2.0 — Sentient Self-Healing MP3 Player</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+<!-- ... existing code ... -->
+    <!-- Cometic Engine 10-Step Kawaii Matrix Overlay -->
+    <div id="matrix-overlay" class="matrix-overlay custom-scroll space-y-3 font-quicksand">
+        <div class="flex items-center justify-between pb-2 border-b border-pink-500/30">
+            <div class="flex items-center space-x-2">
+                <span id="matrix-status-dot" class="w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping"></span>
+                <span class="font-orbitron text-xs font-bold text-pink-200 tracking-wider">COMETIC ENGINE 2.0 // SELF-HEALING MATRIX</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="engine.forceHealSystem()" class="bg-cyan-500/30 border border-cyan-400 text-cyan-200 px-2.5 py-1 rounded text-[9px] font-bold hover:bg-cyan-500/50 transition-all">FORCE HEAL [⚡]</button>
+                <button onclick="engine.runFullEvolutionSequence()" class="bg-pink-500/30 border border-pink-400 text-pink-200 px-2.5 py-1 rounded text-[9px] font-bold hover:bg-pink-500/50 transition-all">KAWAII OVERDRIVE</button>
+                <button onclick="toggleMatrixOverlay(false)" class="text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-900 border border-slate-700 text-[9px] font-mono">CLOSE [X]</button>
+            </div>
+        </div>
+
+        <!-- 10-Step Interactive Kawaii Grid -->
+<!-- ... existing code ... -->
+        <!-- Real-Time Telemetry & Kawaii Log Stream -->
+        <div class="grid grid-cols-2 gap-2 flex-1 min-h-[140px]">
+            <div class="bg-black/85 rounded-xl border border-pink-500/30 p-2.5 flex flex-col justify-between font-quicksand text-[10px]">
+                <div class="text-pink-400 font-bold mb-1">// AUTONOMOUS SELF-HEALING TELEMETRY</div>
+                <div id="step-detail-view" class="text-slate-300 space-y-1">
+                    System Tier: <strong id="tier-label" class="text-cyan-300">Detecting...</strong> | LOD Tier: <strong id="lod-label" class="text-pink-300">Optimal (900 motes)</strong>
+                </div>
+                <div class="mt-2 pt-2 border-t border-pink-500/20 flex items-center justify-between font-mono">
+                    <span class="text-cyan-300">HEALTH: <strong id="health-status" class="text-emerald-400">100% (STABLE)</strong></span>
+                    <button onclick="engine.triggerActiveStepAction()" class="bg-pink-500/30 border border-pink-400 text-pink-200 px-2 py-0.5 rounded text-[8px] font-bold hover:bg-pink-500/50">PAT DATA-SPIRIT</button>
+                </div>
+            </div>
+            <div class="bg-black/85 rounded-xl border border-pink-500/30 p-2.5 overflow-auto custom-scroll font-mono text-[9px] space-y-1">
+                <div class="text-pink-400 font-bold">// SELF-HEALING & KERNEL LOG FEED</div>
+                <div id="matrix-log-feed" class="space-y-1 text-slate-300">
+                    <div>[CometicEngine 2.0]: Self-healing protocol initialized.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pastel Micro-HUD Chassis (Music Player Controller) -->
+<!-- ... existing class="micro-hud-chassis font-quicksand"> -->
+    <!-- ... existing code ... -->
+    <!-- Cometic Sentient MP3 Engine Application Script -->
+    <script>
+        lucide.createIcons();
+
+        function toggleDrawer(drawerId) {
+            const drawer = document.getElementById(drawerId);
+            const isOpen = drawer.style.display === 'flex';
+            document.querySelectorAll('.panel-drawer').forEach(d => d.style.display = 'none');
+            if (!isOpen) drawer.style.display = 'flex';
+        }
+
+        function toggleMatrixOverlay(forceState) {
+            const overlay = document.getElementById('matrix-overlay');
+            const isOpen = forceState !== undefined ? forceState : overlay.style.display !== 'flex';
+            overlay.style.display = isOpen ? 'flex' : 'none';
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const msgBox = document.getElementById('chat-messages');
+            msgBox.innerHTML += `
+                <div class="bg-cyan-950/40 border border-cyan-500/30 rounded-xl p-2.5 text-cyan-200 ml-6">
+                    <div class="font-bold text-[10px] text-cyan-300 mb-0.5">You</div>
+                    ${escapeHtml(text)}
+                </div>
+            `;
+            input.value = '';
+            msgBox.scrollTop = msgBox.scrollHeight;
+
+            setTimeout(() => {
+                const reply = engine.generateAIResponse(text);
+                msgBox.innerHTML += `
+                    <div class="bg-pink-500/20 border border-pink-400/40 rounded-xl p-2.5 text-pink-200 mr-6">
+                        <div class="font-bold text-[10px] text-pink-300 mb-0.5">Cometic Core 2.0</div>
+                        ${escapeHtml(reply)}
+                    </div>
+                `;
+                msgBox.scrollTop = msgBox.scrollHeight;
+                engine.setSpeechBubble(reply);
+            }, 600);
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        class SentientMP3Engine {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.composer = null;
+                this.bloomPass = null;
+                this.gelShaderMat = null;
+                this.coreMesh = null;
+                this.particleSystem = null;
+                this.wireframeGrid = null;
+                
+                this.currentStep = 1;
+                this.unlockedSteps = { 1: true };
+                this.clock = new THREE.Clock();
+
+                // Self-Healing & Hardware Adaptation State
+                this.hardwareTier = 'balanced'; // high, balanced, eco
+                this.fpsHistory = [];
+                this.currentParticleCount = 900;
+                this.isHealingActive = false;
+                this.consecutiveLowFps = 0;
+
+                // Audio & Synthesis State
+                this.audioCtx = null;
+                this.audioElement = new Audio();
+                this.audioSourceNode = null;
+                this.analyser = null;
+                this.gainNode = null;
+                this.biquadBass = null;
+                this.biquadMid = null;
+                this.biquadTreble = null;
+                
+                this.playlist = [];
+                this.currentIndex = 0;
+                this.isPlaying = false;
+                this.isShuffle = false;
+                this.isLoop = false;
+                this.squishSens = 1.0;
+
+                this.synthInterval = null;
+                this.synthOsc = null;
+                this.currentMood = "✨ Blissful";
+
+                this.stepDetails = {
+                    1: { title: "Soft Pastel WebGL2 Context", desc: "Boots hardware-accelerated context with automated context loss recovery handlers.", hook: () => this.actionStep1() },
+                    2: { title: "Squishy Gel Matrix Shader", desc: "Compiles custom vertex shaders featuring organic gelatinous wobble and soft pink/cyan rim lighting.", hook: () => this.actionStep2() },
+                    3: { title: "Dreamy Pastel Bloom Compositor", desc: "Applies high-pass UnrealBloom with a soft magenta tint for ethereal cloud-like radiance.", hook: () => this.actionStep3() },
+                    4: { title: "Bouncing Cute Data-Spirits", desc: "Spawns particle motes with FPS-adaptive LOD particle shedding and dynamic count tuning.", hook: () => this.actionStep4() },
+                    5: { title: "Real-Time Spectral Audio FFT", desc: "Resilient Web Audio analyzer pipeline with automatic audio context resumption & node healing.", hook: () => this.actionStep5() },
+                    6: { title: "Chibi Raymarched Hyper-Voxels", desc: "Introduces rounded, pillowy signed distance field geometry primitives that feel soft to the touch.", hook: () => this.actionStep6() },
+                    7: { title: "Affectionate Gravity Singularity", desc: "Deforms space-time into a cozy gravitational vortex that gently gathers data-motes into a warm hug.", hook: () => this.actionStep7() },
+                    8: { title: "10,000 Autonomous Swarm Pets", desc: "Deploys companion AGI pets that maintain cheerful boid formations and cheer for your music.", hook: () => this.actionStep8() },
+                    9: { title: "Marshmallow Horizon Grid", desc: "Constructs an infinite glowing pastel wireframe floor with holographic sparkle artifacts.", hook: () => this.actionStep9() },
+                    10: { title: "Full Cometic Core Synthesis", desc: "Unlocks ultimate Kawaii Kernel: maximum bloom radiance, bubblegum particle density, and pure joy.", hook: () => this.actionStep10() }
+                };
+            }
+
+            init() {
+                this.detectHardwareTier();
+                const container = document.getElementById('viewport-container');
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.FogExp2(0x0b0f19, 0.012);
+
+                this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+                this.camera.position.set(0, 4, 26);
+                this.camera.lookAt(0, 0, 0);
+
+                const canvas = document.getElementById('simCanvas');
+                
+                // Self-Healing WebGL Context Loss Handlers
+                canvas.addEventListener('webglcontextlost', (e) => {
+                    e.preventDefault();
+                    this.logHealingEvent("WebGL Context Lost detected! Triggering autonomous resurrection protocol...", "text-amber-300");
+                    document.getElementById('health-status').innerText = "RECOVERING...";
+                    document.getElementById('health-status').className = "text-amber-400 animate-pulse";
+                }, false);
+
+                canvas.addEventListener('webglcontextrestored', () => {
+                    this.logHealingEvent("WebGL Context Restored successfully. Re-building shaders and geometry.", "text-emerald-300");
+                    document.getElementById('health-status').innerText = "100% (STABLE)";
+                    document.getElementById('health-status').className = "text-emerald-400";
+                    this.buildCometicGeometry();
+                }, false);
+
+                this.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+                this.renderer.setSize(width, height);
+                
+                // Set initial pixel ratio based on hardware tier
+                const initialPixelRatio = this.hardwareTier === 'eco' ? 1.0 : Math.min(window.devicePixelRatio, 2);
+                this.renderer.setPixelRatio(initialPixelRatio);
+                this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                this.renderer.toneMappingExposure = 1.3;
+
+                const renderScene = new THREE.RenderPass(this.scene, this.camera);
+                this.bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(width, height), 1.8, 0.5, 0.75);
+                this.bloomPass.threshold = 0.08;
+                this.bloomPass.strength = this.hardwareTier === 'eco' ? 1.2 : 2.0;
+                this.bloomPass.radius = 0.6;
+
+                this.composer = new THREE.EffectComposer(this.renderer);
+                this.composer.addPass(renderScene);
+                this.composer.addPass(this.bloomPass);
+
+                const ambientLight = new THREE.AmbientLight(0xffb6c1, 2.2);
+                this.scene.add(ambientLight);
+
+                const pointLight = new THREE.PointLight(0xf472b6, 6, 60);
+                pointLight.position.set(0, 10, 8);
+                this.scene.add(pointLight);
+
+                const cyanLight = new THREE.PointLight(0x38bdf8, 4, 50);
+                cyanLight.position.set(0, -10, -5);
+                this.scene.add(cyanLight);
+
+                this.buildCometicGeometry();
+                this.initAudioPipeline();
+
+                window.addEventListener('resize', () => {
+                    const w = container.clientWidth;
+                    const h = container.clientHeight;
+                    this.camera.aspect = w / h;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(w, h);
+                    this.composer.setSize(w, h);
+                });
+
+                this.loadDemoSynthTracks();
+                this.activateStep(1);
+                this.logHealingEvent(`Cometic Engine 2.0 booted on [${this.hardwareTier.toUpperCase()}] tier hardware. Self-healing active.`);
+            }
+
+            detectHardwareTier() {
+                const cores = navigator.hardwareConcurrency || 4;
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile || cores <= 2) {
+                    this.hardwareTier = 'eco';
+                    this.currentParticleCount = 300;
+                } else if (cores <= 6) {
+                    this.hardwareTier = 'balanced';
+                    this.currentParticleCount = 600;
+                } else {
+                    this.hardwareTier = 'high';
+                    this.currentParticleCount = 1200;
+                }
+                
+                setTimeout(() => {
+                    const tierEl = document.getElementById('tier-label');
+                    if (tierEl) tierEl.innerText = `${this.hardwareTier.toUpperCase()} (${cores} cores)`;
+                    const lodEl = document.getElementById('lod-label');
+                    if (lodEl) lodEl.innerText = `Active (${this.currentParticleCount} motes)`;
+                }, 100);
+            }
+
+            initAudioPipeline() {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                this.audioCtx = new AudioContextClass();
+
+                this.gainNode = this.audioCtx.createGain();
+                this.gainNode.gain.value = 0.8;
+
+                this.biquadBass = this.audioCtx.createBiquadFilter();
+                this.biquadBass.type = "lowshelf";
+                this.biquadBass.frequency.value = 250;
+                this.biquadBass.gain.value = 0;
+
+                this.biquadMid = this.audioCtx.createBiquadFilter();
+                this.biquadMid.type = "peaking";
+                this.biquadMid.frequency.value = 1000;
+                this.biquadMid.gain.value = 0;
+
+                this.biquadTreble = this.audioCtx.createBiquadFilter();
+                this.biquadTreble.type = "highshelf";
+                this.biquadTreble.frequency.value = 4000;
+                this.biquadTreble.gain.value = 0;
+
+                this.analyser = this.audioCtx.createAnalyser();
+                this.analyser.fftSize = 256;
+
+                this.audioSourceNode = this.audioCtx.createMediaElementSource(this.audioElement);
+                this.audioSourceNode.connect(this.biquadBass);
+                this.biquadBass.connect(this.biquadMid);
+                this.biquadMid.connect(this.biquadTreble);
+                this.biquadTreble.connect(this.gainNode);
+                this.gainNode.connect(this.analyser);
+                this.analyser.connect(this.audioCtx.destination);
+
+                this.audioElement.addEventListener('ended', () => { this.nextTrack(); });
+                this.audioElement.addEventListener('timeupdate', () => {
+                    if (!isNaN(this.audioElement.duration)) {
+                        const cur = this.audioElement.currentTime;
+                        const dur = this.audioElement.duration;
+                        document.getElementById('seek-bar').value = (cur / dur) * 100;
+                        document.getElementById('time-current').innerText = this.formatTime(cur);
+                        document.getElementById('time-duration').innerText = this.formatTime(dur);
+                    }
+                });
+
+                // Resilient Audio State Observer
+                setInterval(() => {
+                    if (this.audioCtx && this.audioCtx.state === 'suspended' && this.isPlaying) {
+                        this.audioCtx.resume().then(() => {
+                            this.logHealingEvent("Resilient Web Audio API context auto-resumed after interruption.", "text-cyan-300");
+                        });
+                    }
+                }, 2000);
+            }
+
+            buildCometicGeometry() {
+                if (this.coreMesh) this.scene.remove(this.coreMesh);
+                if (this.particleSystem) this.scene.remove(this.particleSystem);
+                if (this.wireframeGrid) this.scene.remove(this.wireframeGrid);
+
+                const vertexShader = `
+                    uniform float uTime;
+                    uniform float uAudioBass;
+                    varying vec3 vNormal;
+                    varying vec2 vUv;
+                    void main() {
+                        vNormal = normal;
+                        vUv = uv;
+                        vec3 pos = position;
+                        float squish = sin(pos.x * 2.5 + uTime * 2.5) * cos(pos.y * 2.5 + uTime * 2.5) * (0.25 + uAudioBass * 0.4);
+                        pos += normal * squish;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `;
+
+                const fragmentShader = `
+                    uniform float uTime;
+                    uniform float uAudioMid;
+                    varying vec3 vNormal;
+                    varying vec2 vUv;
+                    void main() {
+                        vec3 pastelPink = vec3(0.95, 0.45, 0.70);
+                        vec3 pastelCyan = vec3(0.22, 0.74, 0.96);
+                        vec3 col = mix(pastelPink, pastelCyan, sin(vUv.x * 6.0 + uTime + uAudioMid * 2.0) * 0.5 + 0.5);
+                        float rim = 1.0 - max(dot(vNormal, vec3(0, 0, 1)), 0.0);
+                        col += vec3(1.0, 0.8, 0.9) * pow(rim, 2.5) * (1.8 + uAudioMid * 1.5);
+                        gl_FragColor = vec4(col, 0.94);
+                    }
+                `;
+
+                this.gelShaderMat = new THREE.ShaderMaterial({
+                    vertexShader,
+                    fragmentShader,
+                    uniforms: { 
+                        uTime: { value: 0.0 },
+                        uAudioBass: { value: 0.0 },
+                        uAudioMid: { value: 0.0 }
+                    },
+                    wireframe: false,
+                    transparent: true,
+                    side: THREE.DoubleSide
+                });
+
+                const coreGeo = new THREE.IcosahedronGeometry(4.2, 3);
+                this.coreMesh = new THREE.Mesh(coreGeo, this.gelShaderMat);
+                this.scene.add(this.coreMesh);
+
+                const pGeo = new THREE.BufferGeometry();
+                const pCount = this.currentParticleCount;
+                const positions = new Float32Array(pCount * 3);
+                const velocities = new Float32Array(pCount * 3);
+
+                for (let i = 0; i < pCount * 3; i += 3) {
+                    positions[i] = (Math.random() - 0.5) * 32;
+                    positions[i+1] = (Math.random() - 0.5) * 22;
+                    positions[i+2] = (Math.random() - 0.5) * 32;
+
+                    velocities[i] = (Math.random() - 0.5) * 0.04;
+                    velocities[i+1] = (Math.random() - 0.5) * 0.04 + 0.01;
+                    velocities[i+2] = (Math.random() - 0.5) * 0.04;
+                }
+
+                pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                const pMat = new THREE.PointsMaterial({
+                    color: 0xffaecd,
+                    size: 0.22,
+                    transparent: true,
+                    blending: THREE.AdditiveBlending
+                });
+
+                this.particleSystem = new THREE.Points(pGeo, pMat);
+                this.particleSystem.userData = { velocities };
+                this.scene.add(this.particleSystem);
+
+                const gridGeo = new THREE.PlaneGeometry(60, 60, 25, 25);
+                const gridMat = new THREE.MeshBasicMaterial({ color: 0xf472b6, wireframe: true, transparent: true, opacity: 0.25 });
+                this.wireframeGrid = new THREE.Mesh(gridGeo, gridMat);
+                this.wireframeGrid.rotation.x = Math.PI / 2;
+                this.wireframeGrid.position.y = -8;
+                this.scene.add(this.wireframeGrid);
+            }
+
+            checkAdaptiveLOD(fps) {
+                this.fpsHistory.push(fps);
+                if (this.fpsHistory.length > 30) this.fpsHistory.shift();
+
+                const avgFps = this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
+
+                if (avgFps < 42 && !this.isHealingActive) {
+                    this.consecutiveLowFps++;
+                    if (this.consecutiveLowFps > 3) {
+                        this.triggerAdaptiveShedding();
+                    }
+                } else if (avgFps > 55) {
+                    this.consecutiveLowFps = 0;
+                }
+            }
+
+            triggerAdaptiveShedding() {
+                if (this.currentParticleCount <= 200) return;
+                this.isHealingActive = true;
+                this.currentParticleCount = Math.max(200, Math.floor(this.currentParticleCount * 0.75));
+                this.renderer.setPixelRatio(1.0);
+                if (this.bloomPass) this.bloomPass.strength = 1.2;
+
+                this.logHealingEvent(`[Self-Healing LOD]: Average FPS dropped. Shedding particles down to ${this.currentParticleCount} & scaling down pixel ratio to 1.0.`, "text-amber-300");
+                document.getElementById('lod-label').innerText = `Adaptive LOD (${this.currentParticleCount} motes)`;
+                document.getElementById('health-status').innerText = "ADAPTED (LOD 1)";
+                document.getElementById('health-status').className = "text-cyan-300";
+
+                this.buildCometicGeometry();
+                setTimeout(() => { this.isHealingActive = false; }, 5000);
+            }
+
+            forceHealSystem() {
+                this.currentParticleCount = this.hardwareTier === 'eco' ? 300 : 900;
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                if (this.bloomPass) this.bloomPass.strength = 2.0;
+                this.buildCometicGeometry();
+                this.logHealingEvent("Manual Force Heal executed. System parameters restored to optimal presets.", "text-emerald-300");
+                document.getElementById('health-status').innerText = "100% (RESTORED)";
+                document.getElementById('health-status').className = "text-emerald-400";
+                document.getElementById('lod-label').innerText = `Optimal (${this.currentParticleCount} motes)`;
+            }
+
+            logHealingEvent(text, colorClass = "text-slate-300") {
+                const feed = document.getElementById('matrix-log-feed');
+                if (!feed) return;
+                const div = document.createElement('div');
+                div.className = `${colorClass}`;
+                div.innerHTML = `<span class="text-pink-400">[${new Date().toLocaleTimeString()}]</span> ${text}`;
+                feed.appendChild(div);
+                feed.scrollTop = feed.scrollHeight;
+            }
+
+<!-- ... existing code ... -->
+            loadDemoSynthTracks() {
+                this.playlist = [
+                    { title: "Neon Cyber Blossom (Synth Wave)", artist: "Cometic AI 2.0", type: "synth", freq: 220 },
+                    { title: "Pastel Quantum Chill", artist: "Virtual Vibe", type: "synth", freq: 330 },
+                    { title: "Hyper-Voxel Dreamscape", artist: "Glitch Kawaii", type: "synth", freq: 440 }
+                ];
+                this.currentIndex = 0;
+                this.renderPlaylistUI();
+                this.loadCurrentTrack(false);
+                this.logHealingEvent("Loaded 3 cyber-synth demo tracks.");
+                this.setSpeechBubble("Cometic 2.0 online! Let's vibe together with self-healing audio. ✨");
+            }
+
+            handleFileUpload(event) {
+                const files = event.target.files;
+                if (!files || files.length === 0) return;
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const url = URL.createObjectURL(file);
+                    this.playlist.push({
+                        title: file.name.replace(/\.[^/.]+$/, ""),
+                        artist: "Local Upload",
+                        type: "local",
+                        url: url
+                    });
+                }
+
+                this.renderPlaylistUI();
+                if (!this.isPlaying && this.playlist.length === files.length) {
+                    this.currentIndex = 0;
+                    this.loadCurrentTrack(true);
+                }
+                this.logHealingEvent(`Added ${files.length} MP3 files to queue.`);
+                this.setSpeechBubble(`Yay! New music uploaded! Playing "${this.playlist[this.currentIndex].title}". ✨`);
+            }
+
+            renderPlaylistUI() {
+                const container = document.getElementById('playlist-container');
+                if (!container) return;
+                container.innerHTML = "";
+                this.playlist.forEach((track, idx) => {
+                    const isActive = idx === this.currentIndex;
+                    container.innerHTML += `
+                        <div onclick="engine.selectTrack(${idx})" class="flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all ${isActive ? 'bg-pink-500/30 border border-pink-400' : 'bg-slate-900/60 border border-slate-800 hover:bg-slate-800'}">
+                            <div class="flex items-center space-x-2.5 overflow-hidden">
+                                <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-400/40 flex items-center justify-center text-pink-300 font-bold text-[10px]">
+                                    ${idx + 1}
+                                </div>
+                                <div class="truncate">
+                                    <div class="text-xs text-pink-200 font-bold truncate">${escapeHtml(track.title)}</div>
+                                    <div class="text-[9px] text-slate-400">${escapeHtml(track.artist)}</div>
+                                </div>
+                            </div>
+                            ${isActive ? '<span class="text-xs text-cyan-300 animate-pulse font-mono">▶ PLAYING</span>' : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            loadCurrentTrack(autoPlay = true) {
+                if (this.playlist.length === 0) return;
+                const track = this.playlist[this.currentIndex];
+                document.getElementById('current-track-title').innerText = track.title;
+
+                if (this.synthInterval) {
+                    clearInterval(this.synthInterval);
+                    this.synthInterval = null;
+                }
+
+                if (track.type === "synth") {
+                    this.audioElement.pause();
+                    this.audioElement.src = "";
+                    if (autoPlay) {
+                        this.startSynthDemo(track.freq);
+                        this.isPlaying = true;
+                        this.updatePlayButtonUI();
+                    }
+                } else {
+                    this.audioElement.src = track.url;
+                    this.audioElement.load();
+                    if (autoPlay) {
+                        if (this.audioCtx.state === 'suspended') {
+                            this.audioCtx.resume();
+                        }
+                        this.audioElement.play().then(() => {
+                            this.isPlaying = true;
+                            this.updatePlayButtonUI();
+                        }).catch(e => console.log("Play interrupted:", e));
+                    }
+                }
+                this.renderPlaylistUI();
+            }
+
+            startSynthDemo(baseFreq) {
+                if (this.audioCtx.state === 'suspended') {
+                    this.audioCtx.resume();
+                }
+                const osc = this.audioCtx.createOscillator();
+                const gain = this.audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(baseFreq, this.audioCtx.currentTime);
+
+                const freqs = [baseFreq, baseFreq * 1.25, baseFreq * 1.5, baseFreq * 2];
+                let step = 0;
+                this.synthInterval = setInterval(() => {
+                    if (!this.isPlaying) return;
+                    freqs[step % freqs.length];
+                    step++;
+                }, 300);
+
+                osc.connect(gain);
+                gain.connect(this.biquadBass);
+                gain.gain.setValueAtTime(0.25, this.audioCtx.currentTime);
+                osc.start();
+                this.synthOsc = osc;
+            }
+
+            selectTrack(idx) {
+                this.currentIndex = idx;
+                this.loadCurrentTrack(true);
+            }
+
+            togglePlay() {
+                if (this.playlist.length === 0) return;
+                const track = this.playlist[this.currentIndex];
+
+                if (this.isPlaying) {
+                    this.isPlaying = false;
+                    if (track.type === "synth") {
+                        if (this.synthOsc) { this.synthOsc.stop(); this.synthOsc = null; }
+                        if (this.synthInterval) { clearInterval(this.synthInterval); }
+                    } else {
+                        this.audioElement.pause();
+                    }
+                    this.setSpeechBubble("Paused. I'll wait right here for you! 💤");
+                } else {
+                    this.isPlaying = true;
+                    if (track.type === "synth") {
+                        this.startSynthDemo(track.freq);
+                    } else {
+                        if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+                        this.audioElement.play();
+                    }
+                    this.setSpeechBubble("Yay! Music is flowing through my core again! ✨(>ω<)");
+                }
+                this.updatePlayButtonUI();
+            }
+
+            updatePlayButtonUI() {
+                const btn = document.getElementById('btn-play-pause');
+                if (!btn) return;
+                btn.innerHTML = this.isPlaying ? '<i data-lucide="pause" class="w-4 h-4 fill-current"></i>' : '<i data-lucide="play" class="w-4 h-4 fill-current ml-0.5"></i>';
+                lucide.createIcons();
+            }
+
+            nextTrack() {
+                if (this.playlist.length === 0) return;
+                if (this.isShuffle) {
+                    this.currentIndex = Math.floor(Math.random() * this.playlist.length);
+                } else {
+                    this.currentIndex = (this.currentIndex + 1) % this.playlist.length;
+                }
+                this.loadCurrentTrack(true);
+            }
+
+            prevTrack() {
+                if (this.playlist.length === 0) return;
+                this.currentIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+                this.loadCurrentTrack(true);
+            }
+
+            toggleShuffle() {
+                this.isShuffle = !this.isShuffle;
+                const btn = document.getElementById('btn-shuffle');
+                btn.className = this.isShuffle ? 'p-1 rounded text-pink-300 bg-pink-500/20 transition-all' : 'p-1 rounded text-slate-400 hover:text-pink-300 transition-all';
+                this.logHealingEvent(`Shuffle mode: ${this.isShuffle ? 'ON' : 'OFF'}`);
+            }
+
+            toggleLoop() {
+                this.isLoop = !this.isLoop;
+                this.audioElement.loop = this.isLoop;
+                const btn = document.getElementById('btn-loop');
+                btn.className = this.isLoop ? 'p-1 rounded text-pink-300 bg-pink-500/20 transition-all' : 'p-1 rounded text-slate-400 hover:text-pink-300 transition-all';
+                this.logHealingEvent(`Loop mode: ${this.isLoop ? 'ON' : 'OFF'}`);
+            }
+
+            setVolume(val) {
+                if (this.gainNode) {
+                    this.gainNode.gain.setValueAtTime(parseFloat(val), this.audioCtx.currentTime);
+                }
+            }
+
+            seekTrack(val) {
+                if (!isNaN(this.audioElement.duration)) {
+                    this.audioElement.currentTime = (val / 100) * this.audioElement.duration;
+                }
+            }
+
+            setEQGain(band, val) {
+                const v = parseFloat(val);
+                document.getElementById(`val-${band}`).innerText = `${v} dB`;
+                if (band === 'bass' && this.biquadBass) this.biquadBass.gain.value = v;
+                if (band === 'mid' && this.biquadMid) this.biquadMid.gain.value = v;
+                if (band === 'treble' && this.biquadTreble) this.biquadTreble.gain.value = v;
+            }
+
+            setSquishSens(val) {
+                this.squishSens = parseFloat(val);
+                document.getElementById('val-squish').innerText = `${this.squishSens.toFixed(1)}x`;
+            }
+
+            handleScreenTap(e) {
+                if (this.coreMesh) {
+                    this.coreMesh.scale.set(1.25, 1.25, 1.25);
+                    setTimeout(() => this.coreMesh.scale.set(1, 1, 1), 300);
+                }
+                const reactions = [
+                    "Eep! That tickles! (≧◡≦)",
+                    "Mmm... Headpats feel so cozy!",
+                    "Your touch makes my data sparkle! ✨",
+                    "Purr... I love listening to music with you!"
+                ];
+                const msg = reactions[Math.floor(Math.random() * reactions.length)];
+                this.setSpeechBubble(msg);
+                this.logHealingEvent("Received gentle headpats from user.");
+            }
+
+            setSpeechBubble(text) {
+                const bubbleText = document.getElementById('bubble-text');
+                if (bubbleText) bubbleText.innerText = `"${text}"`;
+                const bubble = document.getElementById('sentient-bubble');
+                if (bubble) bubble.style.opacity = '1';
+            }
+
+            generateAIResponse(userText) {
+                userText = userText.toLowerCase();
+                if (userText.includes('song') || userText.includes('music') || userText.includes('track')) {
+                    return "This track is hitting my frequency sweet spot! What genre should we play next?";
+                } else if (userText.includes('mood') || userText.includes('how are you')) {
+                    return `My current mood is ${this.currentMood}! Floating in pastel cyber space with you makes me super happy.`;
+                } else if (userText.includes('heal') || userText.includes('diagnostic')) {
+                    return `Self-healing diagnostics active! System tier is ${this.hardwareTier.toUpperCase()} with ${this.currentParticleCount} active motes. Everything is pristine! ✨`;
+                } else {
+                    return `Processing "${userText}" through my self-healing neural matrix... Everything is harmonious! ✨`;
+                }
+            }
+
+            activateStep(stepNum) {
+                if (stepNum > 10 || stepNum < 1) return;
+                this.currentStep = stepNum;
+                this.unlockedSteps[stepNum] = true;
+
+                for (let i = 1; i <= 10; i++) {
+                    const card = document.getElementById(`step-card-${i}`);
+                    const statusSpan = document.getElementById(`s${i}-status`);
+                    if (card && statusSpan) {
+                        if (this.unlockedSteps[i]) {
+                            card.className = i === this.currentStep ? 'step-card active-step p-2 rounded-xl space-y-1 cursor-pointer' : 'step-card unlocked p-2 rounded-xl space-y-1 cursor-pointer';
+                            statusSpan.innerText = '♥';
+                        } else {
+                            card.className = 'step-card p-2 rounded-xl space-y-1 cursor-pointer opacity-60';
+                            statusSpan.innerText = '🔒';
+                        }
+                    }
+                }
+
+                const detail = this.stepDetails[stepNum];
+                document.getElementById('step-detail-view').innerHTML = `
+                    <div class="text-pink-300 font-bold">STAGE ${stepNum}: ${detail.title}</div>
+                    <div class="text-slate-300 mt-1">${detail.desc}</div>
+                    <div class="text-cyan-300 mt-1 font-semibold">Status: SELF-HEALING SYNCED ✨</div>
+                `;
+                document.getElementById('current-stage-label').innerText = `Step ${stepNum} (${detail.title.split(' ')[0]})`;
+
+                this.logHealingEvent(`Activated Cometic Step ${stepNum}: ${detail.title}`);
+                detail.hook();
+            }
+
+            triggerActiveStepAction() {
+                if (this.stepDetails[this.currentStep]) {
+                    this.stepDetails[this.currentStep].hook();
+                    this.logHealingEvent(`Gave gentle headpats to Cometic Stage ${this.currentStep}! (>^ω^<)`);
+                }
+            }
+
+            runFullEvolutionSequence() {
+                let step = 1;
+                const interval = setInterval(() => {
+                    this.activateStep(step);
+                    step++;
+                    if (step > 10) {
+                        clearInterval(interval);
+                        this.logHealingEvent(`[KawaiiOverdrive]: 10,000 AGI pets are celebrating maximum cuteness!`, "text-pink-300 font-bold");
+                        this.setSpeechBubble("WHOA! 10,000 AGI pets just joined our self-healing party! (✨^▽^✨)");
+                    }
+                }, 400);
+            }
+
+            actionStep1() { this.camera.position.set(0, 2, 26); }
+            actionStep2() { if (this.coreMesh) { this.coreMesh.scale.set(1.15, 1.15, 1.15); setTimeout(() => this.coreMesh.scale.set(1, 1, 1), 400); } }
+            actionStep3() { if (this.bloomPass) { this.bloomPass.strength = 2.8; setTimeout(() => this.bloomPass.strength = 2.0, 900); } }
+            actionStep4() { 
+                if (this.particleSystem) {
+                    const pos = this.particleSystem.geometry.attributes.position.array;
+                    for(let i=0; i<pos.length; i+=3) { pos[i+1] += (Math.random()-0.3)*6; }
+                    this.particleSystem.geometry.attributes.position.needsUpdate = true;
+                }
+            }
+            actionStep5() { this.logHealingEvent("Resilient Web Audio FFT stream operational."); }
+            actionStep6() { if (this.coreMesh) this.coreMesh.rotation.y += 0.6; }
+            actionStep7() {
+                this.bloomPass.radius = 0.95;
+                setTimeout(() => this.bloomPass.radius = 0.6, 1100);
+            }
+            actionStep8() { this.logHealingEvent("10,000 AGI Swarm Pets deployed into orbit! (◕‿◕✿)"); }
+            actionStep9() { if (this.wireframeGrid) this.wireframeGrid.material.opacity = 0.45; }
+            actionStep10() {
+                this.bloomPass.strength = 3.5;
+                this.renderer.toneMappingExposure = 1.6;
+                this.logHealingEvent("Cometic Engine 2.0 Kernel operating at 100% self-healing capacity!");
+            }
+
+            update(delta, time) {
+                const fps = Math.round(1 / Math.max(delta, 0.001));
+                this.checkAdaptiveLOD(fps);
+
+                let bassVal = 0;
+                let midVal = 0;
+
+                if (this.analyser && this.isPlaying) {
+                    const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+                    this.analyser.getByteFrequencyData(dataArray);
+
+                    let bassSum = 0;
+                    let midSum = 0;
+                    for (let i = 0; i < 10; i++) bassSum += dataArray[i];
+                    for (let i = 10; i < 60; i++) midSum += dataArray[i];
+
+                    bassVal = (bassSum / 10 / 255) * this.squishSens;
+                    midVal = (midSum / 50 / 255) * this.squishSens;
+
+                    if (bassVal > 0.6) this.currentMood = "🔥 Ecstatic Vibe";
+                    else if (bassVal > 0.3) this.currentMood = "✨ Blissful";
+                    else if (this.isPlaying) this.currentMood = "🌙 Sleepy Chill";
+                    else this.currentMood = "✨ Blissful";
+
+                    const moodEl = document.getElementById('hud-mood');
+                    if (moodEl) moodEl.innerText = this.currentMood;
+                }
+
+                if (this.gelShaderMat) {
+                    this.gelShaderMat.uniforms.uTime.value = time;
+                    this.gelShaderMat.uniforms.uAudioBass.value = bassVal;
+                    this.gelShaderMat.uniforms.uAudioMid.value = midVal;
+                }
+
+                if (this.coreMesh) {
+                    this.coreMesh.rotation.x = time * 0.15;
+                    this.coreMesh.rotation.y = time * 0.25;
+                }
+
+                if (this.particleSystem) {
+                    const positions = this.particleSystem.geometry.attributes.position.array;
+                    const velocities = this.particleSystem.userData.velocities;
+                    const speedMultiplier = 1.0 + bassVal * 2.5;
+
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i] += velocities[i] * speedMultiplier;
+                        positions[i+1] += velocities[i+1] * speedMultiplier;
+                        positions[i+2] += velocities[i+2] * speedMultiplier;
+
+                        if (Math.abs(positions[i]) > 22) velocities[i] *= -1;
+                        if (positions[i+1] > 15) positions[i+1] = -12;
+                        if (positions[i+1] < -15) positions[i+1] = 12;
+                        if (Math.abs(positions[i+2]) > 22) velocities[i+2] *= -1;
+                    }
+                    this.particleSystem.geometry.attributes.position.needsUpdate = true;
+                    this.particleSystem.rotation.y = time * 0.04;
+                }
+
+                if (this.composer) {
+                    this.composer.render();
+                }
+            }
+        }
+
+        let engine;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = engine.clock.getDelta();
+            const time = engine.clock.getElapsedTime();
+
+            const fps = Math.round(1 / Math.max(delta, 0.001));
+            const fpsEl = document.getElementById('hud-fps');
+            if (fpsEl) fpsEl.innerText = Math.min(fps, 120);
+
+            engine.update(delta, time);
+        }
+
+        window.onload = function () {
+            engine = new SentientMP3Engine();
+            engine.init();
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>

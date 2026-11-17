@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full select-none bg-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Evo-Matrix OS v23.0 (Micro-HUD + Evolutionary Ecosystem)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;500;600&display=swap');
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+            background-color: #020617; font-family: 'Inter', sans-serif; color: #f8fafc;
+            user-select: none; -webkit-user-select: none; touch-action: none;
+        }
+
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-mono-code { font-family: 'Fira Code', monospace; }
+
+        /* 3D Viewport takes 95% of screen height */
+        #viewport-container {
+            position: absolute; inset: 0; bottom: 65px; z-index: 10;
+        }
+
+        /* Ultra-Compact 5% Micro-HUD Footprint */
+        .micro-hud-chassis {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 65px;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(16, 185, 129, 0.4);
+            z-index: 50;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 6px 12px;
+        }
+
+        /* Hyper-Layered Thought Matrix Overlay */
+        .matrix-overlay {
+            position: absolute; inset: 0; bottom: 65px;
+            background: rgba(2, 6, 23, 0.94);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            z-index: 40;
+            display: none; flex-direction: column; padding: 16px; overflow: hidden;
+        }
+
+        .thought-node {
+            background: rgba(6, 95, 70, 0.25);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .thought-node.active-thought {
+            background: rgba(16, 185, 129, 0.35);
+            border-color: rgba(110, 231, 183, 0.9);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .organic-pill {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(4, 47, 46, 0.65) 100%);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(52, 211, 153, 0.55);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .organic-pill:active { transform: scale(0.95); }
+
+        .custom-scroll::-webkit-scrollbar { width: 3px; height: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.4); border-radius: 3px; }
+    </style>
+</head>
+<body class="relative w-full h-full bg-black overflow-hidden">
+
+    <!-- 3D Spatial Canvas (Evolutionary Ecosystem) -->
+    <div id="viewport-container">
+        <canvas id="simCanvas" class="w-full h-full block touch-none cursor-pointer"></canvas>
+    </div>
+
+    <!-- Hyper-Layered Thought Matrix Overlay -->
+    <div id="matrix-overlay" class="matrix-overlay custom-scroll space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-emerald-500/30">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                <span class="font-orbitron text-xs font-bold text-cyan-200 tracking-wider">EVOLUTIONARY THOUGHT MATRIX</span>
+            </div>
+            <button onclick="toggleMatrixOverlay(false)" class="text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-900 border border-slate-700 text-[9px] font-mono">CLOSE MATRIX [X]</button>
+        </div>
+
+        <!-- Thought Node Network Pipeline -->
+        <div class="grid grid-cols-3 gap-2 font-mono text-[9px]">
+            <div id="node-intent" class="thought-node p-2.5 rounded-xl space-y-1">
+                <div class="text-cyan-300 font-bold">// 1. INTENT PARSER</div>
+                <div id="matrix-intent-text" class="text-slate-300">Awaiting prompt vector...</div>
+            </div>
+            <div id="node-syntax" class="thought-node p-2.5 rounded-xl space-y-1">
+                <div class="text-emerald-300 font-bold">// 2. GENOME MAPPING</div>
+                <div id="matrix-syntax-text" class="text-slate-300">Evaluating ecosystem constraints...</div>
+            </div>
+            <div id="node-actuation" class="thought-node p-2.5 rounded-xl space-y-1">
+                <div class="text-purple-300 font-bold">// 3. ECOSYSTEM ACTUATION</div>
+                <div id="matrix-actuation-text" class="text-slate-300">Standby for live execution...</div>
+            </div>
+        </div>
+
+        <!-- Live Telemetry Log Stream -->
+        <div class="flex-1 bg-black/85 rounded-xl border border-emerald-500/30 p-3 overflow-auto custom-scroll font-mono text-[9px] space-y-1.5">
+            <div class="text-emerald-400 font-bold">// EVOLUTIONARY TELEMETRY BUS</div>
+            <div id="matrix-log-feed" class="space-y-1 text-slate-300">
+                <div>[MatrixCore]: Micro-HUD framework active (5% screen footprint).</div>
+                <div>[EvoEngine]: Ecosystem online. Type commands below to mutate or test agents.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5% MICRO-HUD FOOTPRINT CHASSIS -->
+    <div class="micro-hud-chassis">
+        <!-- Top Row: Telemetry Readouts -->
+        <div class="flex items-center justify-between text-[10px] font-mono text-emerald-300">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-bold text-emerald-100">EVO-HUD v23.0</span>
+                <span class="text-slate-400">|</span>
+                <span class="text-cyan-300">GEN: <strong id="hud-gen">1</strong></span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="text-purple-300">AGENTS: <strong id="hud-agents">24</strong></span>
+                <span class="text-amber-300">FITNESS: <strong id="hud-fitness">100</strong></span>
+                <button onclick="toggleMatrixOverlay()" class="text-emerald-400 underline hover:text-white font-bold cursor-pointer">[MATRIX VIEW]</button>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Natural Language Command Input -->
+        <div class="flex items-center space-x-2 pb-0.5">
+            <div class="w-5 h-5 rounded bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-300 shrink-0">
+                <i data-lucide="dna" class="w-3 h-3 text-emerald-300 animate-pulse"></i>
+            </div>
+            <input id="prompt-input" type="text" placeholder="Command ecosystem (e.g., 'spawn predator', 'trigger selection', 'spawn tree', 'pulse spores')..." 
+                   onkeydown="if(event.key==='Enter') executeUserPrompt(this.value)"
+                   class="flex-1 bg-black/90 border border-emerald-500/40 rounded-lg px-2.5 py-1 text-emerald-200 font-mono text-[10px] focus:outline-none focus:border-cyan-400">
+            <button onclick="executeUserPrompt(document.getElementById('prompt-input').value)" 
+                    class="organic-pill px-3 py-1 rounded-lg text-emerald-100 font-mono text-[9px] font-bold">
+                EXECUTE
+            </button>
+        </div>
+    </div>
+
+    <!-- Master Application Script -->
+    <script>
+        lucide.createIcons();
+
+        // --- 1. FRACTAL BASE CLASS & EVOLUTIONARY AGENTS ---
+        class FractalNode {
+            constructor({ id, tier = 1, scale = 'micro', initialEnergy = 100 }) {
+                this.id = id || `node_${Math.random().toString(36).substring(2, 9)}`;
+                this.tier = tier;
+                this.scale = scale;
+                this.children = [];
+                this.energy = initialEnergy;
+                this.maxEnergy = 100;
+                this.state = 'IDLE';
+                this.stressFactor = 0.0;
+                this.vector = { x: 0, y: 0, z: 0 };
+                this.velocity = { x: 0, y: 0, z: 0 };
+            }
+            addChild(child) { this.children.push(child); return child; }
+            sense(env) {
+                const dist = env.disturbance || 0;
+                this.stressFactor = Math.min(1.0, Math.max(0.0, dist - (this.energy / this.maxEnergy)));
+                this.children.forEach(c => c.sense(env));
+            }
+            evaluate(dt) {
+                const burn = ((this.state === 'ACTIVE' ? 4.0 : 1.0) + (this.stressFactor * 5.0));
+                this.energy = Math.max(0, this.energy - (burn * dt));
+                if (this.energy <= 15) this.state = 'RECOVERING';
+                else if (this.stressFactor > 0.6) this.state = 'STRESSED';
+                else if (this.energy > 80 && this.state === 'RECOVERING') this.state = 'IDLE';
+                this.children.forEach(c => c.evaluate(dt));
+            }
+            actuate(dt) {
+                if (this.state === 'RECOVERING') {
+                    this.energy = Math.min(this.maxEnergy, this.energy + (15.0 * dt));
+                    this.velocity.x = 0; this.velocity.y = 0;
+                } else if (this.state === 'STRESSED') {
+                    this.velocity.x += (Math.random() - 0.5) * 8.0 * dt;
+                    this.velocity.y += (Math.random() - 0.5) * 8.0 * dt;
+                }
+                this.vector.x += this.velocity.x * dt;
+                this.vector.y += this.velocity.y * dt;
+                this.children.forEach(c => c.actuate(dt));
+            }
+        }
+
+        class EvolutionaryPrimateAgent extends FractalNode {
+            constructor(scene, x, y, genome = null, generation = 1) {
+                super({ id: `Agent_${Math.floor(1000 + Math.random() * 9000)}`, tier: 1, scale: 'micro' });
+                this.generation = generation;
+                this.name = this.generateRandomName();
+                this.genome = genome || {
+                    speed: 3.5 + Math.random() * 2.5,
+                    metabolicEfficiency: 0.8 + Math.random() * 0.4,
+                    jumpElasticity: 0.6 + Math.random() * 0.8
+                };
+                this.fitness = 100;
+                this.vector = { x, y, z: 0 };
+                this.velocity = new THREE.Vector3((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, 0);
+                this.targetNode = null;
+                this.poseTimer = Math.random() * 10;
+
+                this.group = new THREE.Group();
+                const torsoGeo = new THREE.CylinderGeometry(0.2, 0.15, 0.4, 8);
+                const colorHash = new THREE.Color().setHSL((this.genome.speed - 3) / 4, 0.8, 0.6);
+                this.torsoMat = new THREE.MeshBasicMaterial({ color: colorHash });
+                this.torso = new THREE.Mesh(torsoGeo, this.torsoMat);
+                this.group.add(this.torso);
+
+                const headGeo = new THREE.SphereGeometry(0.2, 10, 10);
+                this.headMat = new THREE.MeshBasicMaterial({ color: colorHash });
+                this.head = new THREE.Mesh(headGeo, this.headMat);
+                this.head.position.set(0, 0.32, 0);
+                this.group.add(this.head);
+
+                const limbGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.4, 6);
+                this.leftArm = new THREE.Mesh(limbGeo, this.torsoMat);
+                this.leftArm.position.set(-0.25, 0.05, 0);
+                this.rightArm = new THREE.Mesh(limbGeo, this.torsoMat);
+                this.rightArm.position.set(0.25, 0.05, 0);
+                this.group.add(this.leftArm);
+                this.group.add(this.rightArm);
+
+                this.group.position.set(x, y, 0);
+                scene.add(this.group);
+            }
+
+            generateRandomName() {
+                const names = ['Koko', 'Bongo', 'Zazu', 'Mojo', 'Coco', 'Banana', 'Simba', 'Gizmo', 'Chewie', 'Jojo', 'Fiji', 'Mango'];
+                return names[Math.floor(Math.random() * names.length)];
+            }
+
+            evaluate(dt) {
+                const burn = ((this.state === 'ACTIVE' ? 4.0 : 1.0) + (this.stressFactor * 5.0)) / this.genome.metabolicEfficiency;
+                this.energy = Math.max(0, this.energy - (burn * dt));
+                this.fitness += dt * 10 * (this.energy / 100);
+
+                if (this.energy <= 15) this.state = 'RECOVERING';
+                else if (this.stressFactor > 0.6) this.state = 'STRESSED';
+                else if (this.energy > 80 && this.state === 'RECOVERING') this.state = 'IDLE';
+            }
+
+            actuate(dt, trees, scene, gravityVal) {
+                super.actuate(dt);
+                this.poseTimer += dt * 4.0 * (this.genome.speed / 4);
+
+                if (!this.targetNode && trees.length > 0) {
+                    const nearestTree = trees[Math.floor(Math.random() * trees.length)];
+                    if (nearestTree.nodes.length > 0) {
+                        this.targetNode = nearestTree.nodes[Math.floor(Math.random() * nearestTree.nodes.length)];
+                    }
+                }
+
+                if (this.targetNode) {
+                    let dir = this.targetNode.clone().sub(new THREE.Vector3(this.vector.x, this.vector.y, this.vector.z));
+                    if (dir.length() < 0.8) this.targetNode = null;
+                    else {
+                        dir.normalize().multiplyScalar(this.genome.jumpElasticity * 4.0);
+                        this.velocity.lerp(dir, dt * 4.0);
+                    }
+                } else {
+                    this.velocity.y -= gravityVal * dt * 1.5;
+                }
+
+                this.vector.x += this.velocity.x * dt;
+                this.vector.y += this.velocity.y * dt;
+
+                this.group.position.set(this.vector.x, this.vector.y, this.vector.z);
+                this.leftArm.rotation.z = Math.sin(this.poseTimer * 6) * 0.8;
+                this.rightArm.rotation.z = -Math.sin(this.poseTimer * 6) * 0.8;
+
+                if (Math.abs(this.vector.x) > 12) { this.velocity.x *= -1; this.vector.x = Math.sign(this.vector.x) * 12; }
+                if (Math.abs(this.vector.y) > 8) { this.velocity.y *= -1; this.vector.y = Math.sign(this.vector.y) * 8; }
+            }
+
+            mutate(rate) {
+                if (Math.random() < rate) this.genome.speed = Math.max(1.5, Math.min(8.0, this.genome.speed + (Math.random() - 0.5) * 0.8));
+                if (Math.random() < rate) this.genome.metabolicEfficiency = Math.max(0.5, Math.min(2.0, this.genome.metabolicEfficiency + (Math.random() - 0.5) * 0.3));
+            }
+
+            destroy(scene) { scene.remove(this.group); }
+        }
+
+        class SmartTreeCluster extends FractalNode {
+            constructor(scene, x, z, tier) {
+                super({ id: `Tree_${Math.floor(Math.random()*1000)}`, tier: 2, scale: 'meso' });
+                this.group = new THREE.Group();
+                const trunkGeo = new THREE.CylinderGeometry(0.3, 0.4, 6, 8);
+                const trunkMat = new THREE.MeshBasicMaterial({ color: 0x065f46 });
+                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                trunk.position.y = 3;
+                this.group.add(trunk);
+
+                this.nodes = [];
+                for (let i = 0; i < 4; i++) {
+                    const angle = (i / 4) * Math.PI * 2;
+                    const branchGeo = new THREE.CylinderGeometry(0.08, 0.1, 3, 6);
+                    const branchMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+                    const branch = new THREE.Mesh(branchGeo, branchMat);
+                    branch.position.set(Math.cos(angle) * 1.5, 4.5 + (i * 0.3), Math.sin(angle) * 1.5);
+                    this.group.add(branch);
+                    this.nodes.push(branch.position.clone().add(new THREE.Vector3(x, (tier - 2) * 3, z)));
+                }
+
+                const canopyGeo = new THREE.SphereGeometry(2.2, 12, 12);
+                const canopyMat = new THREE.MeshBasicMaterial({ color: 0x34d399, wireframe: true });
+                const canopy = new THREE.Mesh(canopyGeo, canopyMat);
+                canopy.position.y = 6;
+                this.group.add(canopy);
+
+                this.group.position.set(x, (tier - 2) * 3, z);
+                scene.add(this.group);
+            }
+            destroy(scene) { scene.remove(this.group); }
+        }
+
+        // --- 2. APP STATE & SIMULATION ---
+        let scene, camera, renderer;
+        let canopyRootSystem;
+        let primates = [];
+        let smartTrees = [];
+        let currentGeneration = 1;
+        let mutationRate = 0.05;
+        let globalDisturbance = 0.2;
+        let gravityVal = 0.8;
+        let isMatrixOpen = false;
+
+        let lastFrameTime = performance.now();
+        let frameCount = 0;
+        let lastFpsUpdate = performance.now();
+
+        function initSimulation() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x020617, 0.015);
+
+            const wrapper = document.getElementById('viewport-container');
+            const width = wrapper.clientWidth;
+            const height = wrapper.clientHeight;
+
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 0, 30);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('simCanvas'), antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            canopyRootSystem = new FractalNode({ id: 'Root', tier: 3, scale: 'macro' });
+
+            for (let i = 0; i < 6; i++) {
+                const tier = (i % 3) + 1;
+                const tree = new SmartTreeCluster(scene, (Math.random() - 0.5) * 16, (Math.random() - 0.5) * 10, tier);
+                canopyRootSystem.addChild(tree);
+                smartTrees.push(tree);
+            }
+
+            for (let i = 0; i < 24; i++) {
+                const primate = new EvolutionaryPrimateAgent(scene, (Math.random() - 0.5) * 18, (Math.random() - 0.5) * 12, null, currentGeneration);
+                canopyRootSystem.addChild(primate);
+                primates.push(primate);
+            }
+            logMatrix(`[EvoEngine]: Initialized Generation ${currentGeneration} with 24 agents.`);
+        }
+
+        function toggleMatrixOverlay(forceState) {
+            isMatrixOpen = forceState !== undefined ? forceState : !isMatrixOpen;
+            document.getElementById('matrix-overlay').style.display = isMatrixOpen ? 'flex' : 'none';
+        }
+
+        // --- 3. NATURAL LANGUAGE PROMPT PARSER (THOUGHT MATRIX) ---
+        function executeUserPrompt(promptText) {
+            if (!promptText.trim()) return;
+            toggleMatrixOverlay(true);
+
+            // Step 1: Intent Parser
+            document.getElementById('node-intent').className = 'thought-node p-2.5 rounded-xl space-y-1 active-thought';
+            document.getElementById('matrix-intent-text').innerText = `Vector: "${promptText}"`;
+            logMatrix(`[IntentParsed]: Deconstructed prompt vector.`);
+
+            setTimeout(() => {
+                // Step 2: Genome / Syntax Mapping
+                document.getElementById('node-syntax').className = 'thought-node p-2.5 rounded-xl space-y-1 active-thought';
+                document.getElementById('matrix-syntax-text').innerText = `Mapped semantics to evolutionary parameters.`;
+                logMatrix(`[SyntaxMapped]: Linked command to ecosystem state hooks.`);
+            }, 250);
+
+            setTimeout(() => {
+                // Step 3: Ecosystem Actuation
+                document.getElementById('node-actuation').className = 'thought-node p-2.5 rounded-xl space-y-1 active-thought';
+                document.getElementById('matrix-actuation-text').innerText = `Executing actuation in live 3D space.`;
+
+                const lower = promptText.toLowerCase();
+                if (lower.includes('predator') || lower.includes('threat') || lower.includes('stress')) {
+                    globalDisturbance = 0.8;
+                    setTimeout(() => { globalDisturbance = 0.2; }, 4000);
+                    logMatrix(`[Actuation]: Environmental predator threat injected!`, "text-rose-400 font-bold");
+                } else if (lower.includes('selection') || lower.includes('evolve')) {
+                    triggerNaturalSelection();
+                    logMatrix(`[Actuation]: Forced natural selection cycle executed.`, "text-purple-300 font-bold");
+                } else if (lower.includes('tree') || lower.includes('spawn')) {
+                    const tier = Math.floor(Math.random() * 3) + 1;
+                    const tree = new SmartTreeCluster(scene, (Math.random() - 0.5) * 16, (Math.random() - 0.5) * 10, tier);
+                    canopyRootSystem.addChild(tree);
+                    smartTrees.push(tree);
+                    logMatrix(`[Actuation]: Spawned new SmartTree cluster in Tier ${tier}.`, "text-emerald-300 font-bold");
+                } else if (lower.includes('sneeze') || lower.includes('pulse')) {
+                    primates.forEach(m => m.state = 'STRESSED');
+                    logMatrix(`[Actuation]: Spore pulse triggered across all canopy branches.`, "text-purple-300 font-bold");
+                } else {
+                    logMatrix(`[Actuation]: Processed general command. Ecosystem stable.`);
+                }
+
+                document.getElementById('prompt-input').value = '';
+            }, 600);
+        }
+
+        function triggerNaturalSelection() {
+            primates.sort((a, b) => b.fitness - a.fitness);
+            const survivors = primates.slice(0, Math.floor(primates.length / 2));
+            primates.forEach(m => m.destroy(scene));
+            primates = [];
+            currentGeneration++;
+
+            canopyRootSystem = new FractalNode({ id: 'Root', tier: 3, scale: 'macro' });
+            smartTrees.forEach(t => canopyRootSystem.addChild(t));
+
+            for (let i = 0; i < 24; i++) {
+                const p1 = survivors[Math.floor(Math.random() * survivors.length)].genome;
+                const p2 = survivors[Math.floor(Math.random() * survivors.length)].genome;
+                const childGenome = {
+                    speed: (p1.speed + p2.speed) / 2,
+                    metabolicEfficiency: (p1.metabolicEfficiency + p2.metabolicEfficiency) / 2,
+                    jumpElasticity: (p1.jumpElasticity + p2.jumpElasticity) / 2
+                };
+                const primate = new EvolutionaryPrimateAgent(scene, (Math.random() - 0.5) * 18, (Math.random() - 0.5) * 12, childGenome, currentGeneration);
+                primate.mutate(mutationRate);
+                canopyRootSystem.addChild(primate);
+                primates.push(primate);
+            }
+            document.getElementById('hud-gen').innerText = currentGeneration;
+            logMatrix(`[Selection]: Generation ${currentGeneration} spawned via crossover & mutation!`);
+        }
+
+        function logMatrix(text, colorClass = "text-slate-300") {
+            const feed = document.getElementById('matrix-log-feed');
+            const div = document.createElement('div');
+            div.className = `${colorClass}`;
+            div.innerHTML = `<span class="text-cyan-400">[${new Date().toLocaleTimeString()}]</span> ${text}`;
+            feed.appendChild(div);
+            feed.scrollTop = feed.scrollHeight;
+        }
+
+        // --- 4. MASTER LOOP ---
+        function animate(now) {
+            requestAnimationFrame(animate);
+
+            const dt = Math.min((now - lastFrameTime) * 0.001, 0.05);
+            lastFrameTime = now;
+
+            const env = { disturbance: globalDisturbance };
+            canopyRootSystem.sense(env);
+            canopyRootSystem.evaluate(dt);
+
+            smartTrees.forEach(t => t.actuate(dt));
+            primates.forEach(m => m.actuate(dt, smartTrees, scene, gravityVal));
+
+            let topFit = 0;
+            primates.forEach(p => { if (p.fitness > topFit) topFit = p.fitness; });
+
+            document.getElementById('hud-agents').innerText = primates.length;
+            document.getElementById('hud-fitness').innerText = Math.round(topFit);
+
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+
+        window.onload = function () {
+            initSimulation();
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>

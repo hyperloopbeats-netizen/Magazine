@@ -1,0 +1,165 @@
+:root {
+  --bg-void: #07090f;
+  --surface-panel: rgba(11, 15, 25, 0.92);
+  --surface-elevated: rgba(17, 23, 38, 0.95);
+  --surface-subtle: rgba(255, 255, 255, 0.05);
+  --border-hairline: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(56, 189, 248, 0.45);
+  --text-primary: #f1f5f9;
+  --text-muted: #94a3b8;
+  --accent-primary: #38bdf8;
+  --accent-warm: #f59e0b;
+  --accent-pink: #f472b6;
+  --accent-emerald: #34d399;
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom sleek scrollbars */
+.os-scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.os-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.os-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.os-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+
+/* Range inputs */
+input[type='range'].os-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.14);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type='range'].os-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e0f2fe;
+  border: 2px solid #38bdf8;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+input[type='range'].os-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Mood filters on the stage canvas */
+.stage-mood-flow {
+  filter: none;
+}
+
+.stage-mood-solar {
+  filter: contrast(1.06) saturate(1.12) sepia(0.08);
+}
+
+.stage-mood-pastel {
+  filter: saturate(1.08) brightness(1.04) hue-rotate(-8deg);
+}
+
+.stage-mood-chaos {
+  filter: contrast(1.14) saturate(1.32) hue-rotate(36deg);
+}
+
+.stage-mood-zen {
+  filter: saturate(0.82) contrast(1.02) hue-rotate(190deg);
+}
+
+/* Window Surface (solid/translucent rgba without backdrop-filter over WebGL for peak FPS) */
+.os-panel {
+  background: var(--surface-panel);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 24px 56px -12px rgba(0, 0, 0, 0.85);
+}
+
+.os-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.os-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.os-btn:active {
+  transform: scale(0.97);
+}
+
+.os-btn:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.os-btn-active {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.65);
+  color: #bae6fd;
+}
+
+/* Subtle vignette scrim so edge HUD controls always stay 4.5:1+ readable over bright photos */
+.stage-scrim-top {
+  background: linear-gradient(180deg, rgba(7, 9, 15, 0.82) 0%, rgba(7, 9, 15, 0.35) 55%, transparent 100%);
+}
+
+.stage-scrim-bottom {
+  background: linear-gradient(0deg, rgba(7, 9, 15, 0.9) 0%, rgba(7, 9, 15, 0.45) 60%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Matrix Slide OS",
+  "description": "Live WebGL2 and Three.js image transitioning matrix slideshow studio with audio reactivity, procedural art synthesis, and interactive OS workspace.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
